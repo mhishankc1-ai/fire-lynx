@@ -1,0 +1,846 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="FIRE LYNX — discover films, explore genres, and find your next movie night.">
+  <meta name="theme-color" content="#090909">
+  <title>FIRE LYNX | Your World. Your Screen.</title>
+
+  <style>
+    :root {
+      --red: #f0202c;
+      --red-dark: #a80b16;
+      --black: #080808;
+      --panel: #171717;
+      --muted: #aaa;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background: var(--black);
+      color: #fff;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    a { color: inherit; }
+    [hidden] { display: none !important; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 14px 5%;
+      background: #090909ef;
+      border-bottom: 1px solid #282828;
+      backdrop-filter: blur(12px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      color: white;
+      text-decoration: none;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 1px;
+      white-space: nowrap;
+    }
+
+    .brand-name span { color: var(--red); }
+    .bird { width: 37px; height: 37px; flex-shrink: 0; }
+
+    nav { display: flex; gap: 18px; }
+
+    nav a {
+      color: #ddd;
+      text-decoration: none;
+      font-size: 14px;
+    }
+
+    nav a:hover { color: #ff5962; }
+
+    .search {
+      width: 220px;
+      max-width: 34%;
+      padding: 11px 12px;
+      border: 1px solid #414141;
+      border-radius: 7px;
+      background: #202020;
+      color: white;
+      outline: none;
+    }
+
+    .search:focus { border-color: var(--red); }
+
+    .hero {
+      min-height: 410px;
+      display: flex;
+      align-items: center;
+      padding: 66px 7%;
+      background:
+        radial-gradient(ellipse at 82% 42%, #9e102a75, transparent 35%),
+        linear-gradient(110deg, #2c050a, #0b0b0b 66%, #240508);
+      border-bottom: 1px solid #282828;
+    }
+
+    .hero-content { max-width: 650px; }
+
+    .eyebrow {
+      color: #ff5d66;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 4px;
+    }
+
+    .hero h1 {
+      margin: 17px 0;
+      font-size: clamp(42px, 6.5vw, 72px);
+      line-height: 1.02;
+      letter-spacing: -2px;
+    }
+
+    .hero p {
+      max-width: 520px;
+      color: #d0d0d0;
+      line-height: 1.7;
+    }
+
+    .btn {
+      margin: 7px 8px 0 0;
+      padding: 12px 17px;
+      border: 0;
+      border-radius: 6px;
+      background: var(--red);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .btn:hover { filter: brightness(1.12); }
+
+    .btn.secondary {
+      background: #303030;
+      border: 1px solid #454545;
+    }
+
+    .btn.secondary:hover { background: #414141; }
+
+    main { padding: 28px 5% 54px; }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 15px;
+      flex-wrap: wrap;
+    }
+
+    .section-head h2 {
+      margin: 12px 0;
+      font-size: 25px;
+    }
+
+    .filters {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .filter {
+      padding: 9px 13px;
+      border: 1px solid #424242;
+      border-radius: 24px;
+      background: #1d1d1d;
+      color: #eee;
+    }
+
+    .filter.active,
+    .filter:hover {
+      background: #940d17;
+      border-color: var(--red);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 17px;
+      margin-top: 20px;
+    }
+
+    .card {
+      min-width: 0;
+      overflow: hidden;
+      border: 1px solid #2d2d2d;
+      border-radius: 9px;
+      background: var(--panel);
+      transition: transform 0.2s, border-color 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #7a252c;
+    }
+
+    .poster {
+      height: 210px;
+      display: grid;
+      place-items: center;
+      padding: 12px;
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: 2px;
+      text-shadow: 0 3px 12px #000;
+    }
+
+    .poster span {
+      max-width: 95%;
+      padding: 11px 8px;
+      border: 2px solid #ffffff88;
+    }
+
+    .p1 { background: linear-gradient(145deg, #8e1120, #17080c 65%, #e24732); }
+    .p2 { background: linear-gradient(145deg, #103854, #087b91, #07131d); }
+    .p3 { background: linear-gradient(145deg, #53330c, #d28b28, #1c1008); }
+    .p4 { background: linear-gradient(145deg, #29234e, #83539a, #0b0b1d); }
+    .p5 { background: linear-gradient(145deg, #174c3b, #4a9d78, #07150f); }
+    .p6 { background: linear-gradient(145deg, #54221d, #b74636, #1b1010); }
+    .p7 { background: linear-gradient(145deg, #252525, #595959, #111); }
+    .p8 { background: linear-gradient(145deg, #4c112c, #b33254, #180812); }
+
+    .card-info { padding: 13px; }
+
+    .card-info h3 {
+      margin: 0 0 8px;
+      font-size: 16px;
+    }
+
+    .meta {
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .card-info p {
+      min-height: 38px;
+      color: #bcbcbc;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .card-actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .card-actions button {
+      flex: 1;
+      padding: 9px 5px;
+      border-radius: 5px;
+      font-size: 12px;
+    }
+
+    .watch {
+      border: 0;
+      background: var(--red);
+      color: white;
+    }
+
+    .save {
+      border: 1px solid #444;
+      background: #292929;
+      color: white;
+    }
+
+    .save.saved {
+      border-color: var(--red);
+      color: #ff7079;
+    }
+
+    .empty { padding: 28px 0; color: var(--muted); }
+
+    .hint, .note {
+      color: #999;
+      font-size: 12px;
+      line-height: 1.7;
+    }
+
+    .hint { margin-top: 24px; }
+
+    footer {
+      padding: 27px 5%;
+      border-top: 1px solid #292929;
+      color: #aaa;
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    footer strong { color: #fff; }
+    .footer-brand { color: var(--red); font-weight: 900; }
+
+    dialog {
+      width: min(850px, 94%);
+      max-height: 90vh;
+      overflow: auto;
+      padding: 20px;
+      border: 1px solid #555;
+      border-radius: 12px;
+      background: #131313;
+      color: #fff;
+    }
+
+    dialog::backdrop { background: #000d; }
+
+    .dialog-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .dialog-head h2 { margin: 5px 0; }
+
+    .close-btn {
+      padding: 10px 13px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background: #333;
+      color: #fff;
+    }
+
+    .quality-control {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 14px;
+      color: #ddd;
+      font-size: 13px;
+    }
+
+    .quality-control select {
+      max-width: 100%;
+      padding: 9px 12px;
+      border: 1px solid #555;
+      border-radius: 6px;
+      background: #242424;
+      color: #fff;
+    }
+
+    video {
+      display: block;
+      width: 100%;
+      max-height: 62vh;
+      margin-top: 14px;
+      background: #000;
+    }
+
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      nav { gap: 12px; }
+    }
+
+    @media (max-width: 700px) {
+      .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      nav { display: none; }
+      .hero { min-height: 370px; padding: 54px 5%; }
+    }
+
+    @media (max-width: 440px) {
+      header { gap: 8px; padding: 12px 4%; }
+      .brand { gap: 5px; font-size: 17px; }
+      .bird { width: 29px; height: 29px; }
+      .search { width: 145px; max-width: 43%; padding: 9px; }
+      .poster { height: 155px; font-size: 16px; }
+      .card-info { padding: 9px; }
+      .card-info h3 { font-size: 14px; }
+      .card-actions { flex-direction: column; }
+      .card-info p { min-height: 0; }
+      .section-head h2 { font-size: 22px; }
+      main { padding: 20px 4% 35px; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <a class="brand" href="#home" aria-label="FIRE LYNX home">
+      <svg class="bird" viewBox="0 0 64 64" role="img" aria-label="Fire bird logo">
+        <defs>
+          <linearGradient id="flame" x1="0" y1="1" x2="1" y2="0">
+            <stop offset="0" stop-color="#a80010" />
+            <stop offset=".55" stop-color="#ff252e" />
+            <stop offset="1" stop-color="#ffb13b" />
+          </linearGradient>
+        </defs>
+        <path fill="url(#flame)" d="M29 57C26 46 14 43 6 31c11 2 18 5 24 12C26 30 21 18 10 7c15 6 24 17 25 29 6-11 14-17 25-22-4 13-9 21-21 29 8-1 15-5 20-10-4 13-15 22-30 24z" />
+        <path fill="#090909" d="M36 18l11 4-7 6z" />
+        <circle cx="42" cy="25" r="2.2" fill="#fff" />
+        <path fill="#ff8a35" d="M47 30l12-2-9 8z" />
+      </svg>
+      <span class="brand-name"><span>FIRE</span> LYNX</span>
+    </a>
+
+    <nav aria-label="Main navigation">
+      <a href="#home">Home</a>
+      <a href="#movies">Browse</a>
+      <a href="#about">About</a>
+    </nav>
+
+    <input class="search" id="search" type="search"
+      placeholder="Search titles..." aria-label="Search titles">
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-content">
+      <div class="eyebrow">WELCOME TO FIRE LYNX</div>
+      <h1>Your world.<br>Your screen.</h1>
+      <p>Discover stories, explore new worlds, and find your next movie-night favourite.</p>
+      <button class="btn" id="featuredPlay">▶ Watch demo</button>
+      <button class="btn secondary" id="exploreBtn">Explore catalogue</button>
+      <p class="note">A movie-platform prototype, built for the love of cinema.</p>
+    </div>
+  </section>
+
+  <main id="movies">
+    <div class="section-head">
+      <h2 id="sectionTitle">Explore titles</h2>
+      <div class="filters" id="filters" aria-label="Filter movies by genre">
+        <button class="filter active" data-genre="All">All</button>
+        <button class="filter" data-genre="Animation">Animation</button>
+        <button class="filter" data-genre="Action">Action</button>
+        <button class="filter" data-genre="Adventure">Adventure</button>
+        <button class="filter" data-genre="Drama">Drama</button>
+        <button class="filter" data-genre="Sci-Fi">Sci-Fi</button>
+        <button class="filter" data-genre="Mystery">Mystery</button>
+        <button class="filter" data-genre="My List">♥ My List</button>
+      </div>
+    </div>
+
+    <div class="grid" id="movieGrid"></div>
+    <p class="empty" id="empty" hidden>No titles found. Try another search or category.</p>
+    <p class="hint">Some entries are placeholders and do not have playable videos yet. Add only films, video URLs, and artwork you own or are authorised to use.</p>
+  </main>
+
+  <dialog id="player" aria-labelledby="playerTitle">
+    <div class="dialog-head">
+      <h2 id="playerTitle">Movie player</h2>
+      <button class="close-btn" id="closePlayer">✕ Close</button>
+    </div>
+
+    <p id="playerMessage" class="note"></p>
+
+    <div class="quality-control" id="qualityWrap" hidden>
+      <label for="qualitySelect">Video quality:</label>
+      <select id="qualitySelect" aria-label="Choose video quality"></select>
+    </div>
+
+    <video id="movieVideo" controls playsinline preload="metadata" hidden>
+      Your browser does not support video playback.
+    </video>
+  </dialog>
+
+  <footer id="about">
+    <strong class="footer-brand">FIRE LYNX</strong> — Your World. Your Screen.<br>
+    Independent website project; not affiliated with Netflix. Use appropriately licensed film content and artwork.<br>
+    <span class="note">Demo video: Elephants Dream by the Blender Foundation, made available under Creative Commons Attribution 2.5. Review the licence terms before reuse.</span>
+  </footer>
+
+  <script>
+    'use strict';
+
+    // DEMO VIDEO
+    // Its resolution and frame rate have not been verified as 720p60.
+    const demoVideo =
+      'https://archive.org/download/ElephantsDream/ed_1024_512kb.mp4';
+
+    // MOVIE CATALOGUE
+    // Add direct video URLs you own or are authorised to stream.
+    const movies = [
+      {
+        id: 1,
+        title: 'Elephants Dream',
+        genre: 'Animation',
+        year: '2006',
+        poster: 'p1',
+        label: 'ELEPHANTS DREAM',
+        description: 'An animated short film to test the video player.',
+        video: demoVideo,
+        qualitySources: [
+          {
+            label: 'Original source (quality not verified)',
+            url: demoVideo
+          }
+
+          // Add a real 720p60 video when you have one:
+          // {
+          //   label: '720p · 60 FPS',
+          //   url: 'https://your-host/your-authorized-video-720p60.mp4'
+          // }
+        ]
+      },
+      {
+        id: 2,
+        title: 'Crimson Protocol',
+        genre: 'Action',
+        year: 'Coming soon',
+        poster: 'p2',
+        label: 'CRIMSON',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      },
+      {
+        id: 3,
+        title: 'Golden Horizon',
+        genre: 'Drama',
+        year: 'Coming soon',
+        poster: 'p3',
+        label: 'HORIZON',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      },
+      {
+        id: 4,
+        title: 'The Last Signal',
+        genre: 'Sci-Fi',
+        year: 'Coming soon',
+        poster: 'p4',
+        label: 'LAST SIGNAL',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      },
+      {
+        id: 5,
+        title: 'Wild Frontier',
+        genre: 'Adventure',
+        year: 'Coming soon',
+        poster: 'p5',
+        label: 'FRONTIER',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      },
+      {
+        id: 6,
+        title: 'Silent Streets',
+        genre: 'Mystery',
+        year: 'Coming soon',
+        poster: 'p6',
+        label: 'SILENT',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      },
+      {
+        id: 7,
+        title: 'Dark Signal',
+        genre: 'Mystery',
+        year: 'Coming soon',
+        poster: 'p7',
+        label: 'DARK SIGNAL',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      },
+      {
+        id: 8,
+        title: 'Scarlet Night',
+        genre: 'Action',
+        year: 'Coming soon',
+        poster: 'p8',
+        label: 'SCARLET NIGHT',
+        description: 'Sample listing. Add an authorised video to enable playback.',
+        video: '',
+        qualitySources: []
+      }
+    ];
+
+    // PAGE ELEMENTS
+    const grid = document.getElementById('movieGrid');
+    const search = document.getElementById('search');
+    const player = document.getElementById('player');
+    const movieVideo = document.getElementById('movieVideo');
+    const playerMessage = document.getElementById('playerMessage');
+    const qualityWrap = document.getElementById('qualityWrap');
+    const qualitySelect = document.getElementById('qualitySelect');
+
+    let activeSources = [];
+    let currentGenre = 'All';
+    let myListMode = false;
+    let savedIds = [];
+
+    // LOAD SAVED MOVIES
+    try {
+      const stored = JSON.parse(
+        localStorage.getItem('fireLynxMyList') || '[]'
+      );
+
+      if (Array.isArray(stored)) {
+        savedIds = stored.filter(Number.isInteger);
+      }
+    } catch (error) {
+      savedIds = [];
+    }
+
+    // SAVE MY LIST
+    function saveList() {
+      try {
+        localStorage.setItem(
+          'fireLynxMyList',
+          JSON.stringify(savedIds)
+        );
+      } catch (error) {
+        console.warn('Could not save My List in this browser.', error);
+      }
+    }
+
+    // RETURN VALID VIDEO SOURCES.
+    // If qualitySources is empty, fall back to movie.video.
+    function getVideoSources(movie) {
+      const sources = Array.isArray(movie.qualitySources)
+        ? movie.qualitySources.filter((source) =>
+            source &&
+            typeof source.url === 'string' &&
+            source.url.trim() !== ''
+          )
+        : [];
+
+      if (sources.length > 0) {
+        return sources;
+      }
+
+      return movie.video
+        ? [{
+            label: 'Original source (quality not verified)',
+            url: movie.video
+          }]
+        : [];
+    }
+
+    // SEARCH, FILTER AND DISPLAY MOVIES
+    function renderMovies() {
+      const query = search.value.trim().toLowerCase();
+
+      const visibleMovies = movies.filter((movie) => {
+        const genreMatch =
+          currentGenre === 'All' ||
+          currentGenre === 'My List' ||
+          movie.genre === currentGenre;
+
+        const listMatch =
+          !myListMode || savedIds.includes(movie.id);
+
+        const textMatch =
+          movie.title.toLowerCase().includes(query) ||
+          movie.genre.toLowerCase().includes(query);
+
+        return genreMatch && listMatch && textMatch;
+      });
+
+      grid.innerHTML = visibleMovies.map((movie) => {
+        const saved = savedIds.includes(movie.id);
+        const hasVideo = getVideoSources(movie).length > 0;
+
+        return `
+          <article class="card">
+            <div class="poster ${movie.poster}">
+              <span>${movie.label}</span>
+            </div>
+
+            <div class="card-info">
+              <h3>${movie.title}</h3>
+              <div class="meta">${movie.year} · ${movie.genre}</div>
+              <p>${movie.description}</p>
+
+              <div class="card-actions">
+                <button class="watch" data-watch="${movie.id}">
+                  ${hasVideo ? '▶ Watch film' : 'Details'}
+                </button>
+
+                <button
+                  class="save ${saved ? 'saved' : ''}"
+                  data-save="${movie.id}">
+                  ${saved ? '♥ Saved' : '+ My List'}
+                </button>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join('');
+
+      document.getElementById('empty').hidden =
+        visibleMovies.length !== 0;
+
+      document.getElementById('sectionTitle').textContent =
+        myListMode ? 'My List' : 'Explore titles';
+    }
+
+    // GENRE FILTERS AND MY LIST
+    function selectGenre(button) {
+      currentGenre = button.dataset.genre;
+      myListMode = currentGenre === 'My List';
+
+      document.querySelectorAll('[data-genre]').forEach((item) => {
+        item.classList.toggle('active', item === button);
+      });
+
+      renderMovies();
+    }
+
+    document.getElementById('filters').addEventListener('click', (event) => {
+      const button = event.target.closest('[data-genre]');
+      if (button) selectGenre(button);
+    });
+
+    // LIVE SEARCH
+    search.addEventListener('input', renderMovies);
+
+    // SCROLL TO CATALOGUE
+    document.getElementById('exploreBtn').addEventListener('click', () => {
+      document.getElementById('movies').scrollIntoView({
+        behavior: 'smooth'
+      });
+    });
+
+    // LOAD A SELECTED VIDEO SOURCE
+    function loadVideoSource(index, resumePlayback = false) {
+      const source = activeSources[index];
+      if (!source) return;
+
+      movieVideo.pause();
+      movieVideo.src = source.url;
+      movieVideo.hidden = false;
+      movieVideo.load();
+
+      if (resumePlayback) {
+        movieVideo.play().catch(() => {
+          // The browser may require the user to press Play again.
+        });
+      }
+    }
+
+    // OPEN MOVIE PLAYER AND SHOW QUALITY OPTIONS
+    function openMovie(movie) {
+      document.getElementById('playerTitle').textContent = movie.title;
+
+      movieVideo.pause();
+      movieVideo.removeAttribute('src');
+      movieVideo.load();
+      movieVideo.hidden = true;
+      qualitySelect.innerHTML = '';
+
+      activeSources = getVideoSources(movie);
+      qualityWrap.hidden = activeSources.length === 0;
+
+      if (activeSources.length > 0) {
+        activeSources.forEach((source, index) => {
+          const option = document.createElement('option');
+          option.value = String(index);
+          option.textContent = source.label || `Version ${index + 1}`;
+          qualitySelect.appendChild(option);
+        });
+
+        // Prefer 720p60 only if a source has actually been added with that label.
+        const preferredIndex = activeSources.findIndex((source) =>
+          /720p\s*[·@]?\s*60\s*(fps)?/i.test(source.label || '')
+        );
+
+        const startIndex = preferredIndex >= 0 ? preferredIndex : 0;
+        qualitySelect.value = String(startIndex);
+
+        playerMessage.textContent =
+          'Choose a listed version. Actual quality depends on the video file.';
+
+        loadVideoSource(startIndex);
+      } else {
+        playerMessage.textContent =
+          'This sample catalogue entry is not playable yet. Add a video URL ' +
+          'for a film you own or are authorised to stream.';
+      }
+
+      if (typeof player.showModal === 'function') {
+        player.showModal();
+      } else {
+        alert(playerMessage.textContent);
+      }
+    }
+
+    // SWITCH VIDEO QUALITY / SOURCE
+    qualitySelect.addEventListener('change', () => {
+      const wasPlaying = !movieVideo.paused;
+      loadVideoSource(Number(qualitySelect.value), wasPlaying);
+    });
+
+    // FEATURED DEMO
+    document.getElementById('featuredPlay').addEventListener('click', () => {
+      openMovie(movies[0]);
+    });
+
+    // WATCH AND MY LIST BUTTONS
+    grid.addEventListener('click', (event) => {
+      const watchButton = event.target.closest('[data-watch]');
+      const saveButton = event.target.closest('[data-save]');
+
+      if (watchButton) {
+        const movie = movies.find(
+          (item) => item.id === Number(watchButton.dataset.watch)
+        );
+
+        if (movie) openMovie(movie);
+      }
+
+      if (saveButton) {
+        const id = Number(saveButton.dataset.save);
+
+        savedIds = savedIds.includes(id)
+          ? savedIds.filter((item) => item !== id)
+          : [...savedIds, id];
+
+        saveList();
+        renderMovies();
+      }
+    });
+
+    // CLOSE PLAYER
+    function closePlayer() {
+      movieVideo.pause();
+
+      if (player.open) {
+        player.close();
+      }
+    }
+
+    document.getElementById('closePlayer').addEventListener(
+      'click',
+      closePlayer
+    );
+
+    player.addEventListener('close', () => {
+      movieVideo.pause();
+    });
+
+    player.addEventListener('click', (event) => {
+      if (event.target === player) {
+        closePlayer();
+      }
+    });
+
+    // START THE WEBSITE
+    renderMovies();
+  </script>
+</body>
+</html>
